@@ -1,0 +1,11 @@
+<h1>{{user.username}}'s Profile</h1>
+
+<p>Welcome back! These are your profile details:</p>
+
+<div>
+    <p>Username: {{user.username}}</p>  
+    <p>User-ID: {{user._id}}</p>
+    {{#if user.name }}
+    <p>Name: {{user.name}}</p>
+    {{/if}}
+</div> 

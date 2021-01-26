@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  padding: 50px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+a {
+  color: #00b7ff; }
+
+  * {
+    box-sizing: inherit;
+  }
+  
+  html {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: sans-serif;
+    max-width: 60em;
+    margin: 0 auto;
+  }
+  
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em 0;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input,
+  textarea,
+  button {
+    border: 1px solid grey;
+    font: inherit;
+    padding: 1em;
+    margin-bottom: 1em;
+  }
+
+/*# sourceMappingURL=style.css.map */

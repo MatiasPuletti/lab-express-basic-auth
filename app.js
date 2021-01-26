@@ -4,8 +4,15 @@ const createError = require('http-errors');
 const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
 const serveFavicon = require('serve-favicon');
+const mongoose = require('mongoose');
+const expressSession = require('express-session');
+const connectMongo = require('connect-mongo');
+const MongoStore = connectMongo(expressSession);
+const User = require('./models/user');
 
 const indexRouter = require('./routes/index');
+const authenticationRouter = require('./routes/authentication');
+
 
 const app = express();
 
@@ -14,7 +21,24 @@ app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 app.use(express.static(join(__dirname, 'public')));
+app.use(express.static(join(__dirname, 'public/images')));
+
 app.use(serveFavicon(join(__dirname, 'public/images', 'favicon.ico')));
+
+app.use(
+  expressSession({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 15 * 24 * 60 * 60 * 1000
+    },
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 60 * 60
+    })
+  })
+);
 
 app.use(logger('dev'));
 app.use(express.urlencoded({ extended: false }));
@@ -28,7 +52,26 @@ app.use(
   })
 );
 
+// Iteration 3
+const userDeserializationMiddleware = (req, res, next) => {
+  if (req.session.userId) {
+    User.findById(req.session.userId)
+      .then((user) => {
+        req.user = user;
+        res.locals.user = user;
+        next();
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } else {
+    next();
+  }
+};
+app.use(userDeserializationMiddleware);
+
 app.use('/', indexRouter);
+app.use('/authentication', authenticationRouter);
 
 // Catch missing routes and forward to error handler
 app.use((req, res, next) => {
